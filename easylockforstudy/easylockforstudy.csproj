@@ -38,7 +38,7 @@
     </StartupObject>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>www.ico.la_362cabbf4d7baa670f86a8b634a30a79_32X32.ico</ApplicationIcon>
+    <ApplicationIcon>logo</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -101,7 +101,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="www.ico.la_362cabbf4d7baa670f86a8b634a30a79_32X32.ico" />
+    <None Include="logo" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
