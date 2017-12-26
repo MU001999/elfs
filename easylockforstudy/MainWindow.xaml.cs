@@ -118,7 +118,7 @@ namespace easylockforstudy
             FileStream fs = new FileStream(fileName, FileMode.Create);
             BinaryWriter bw = new BinaryWriter(fs);
 
-            long time = GetTimeStampNow() + (timeChoose.SelectedIndex + 1) * 3;
+            long time = GetTimeStampNow() + (timeChoose.SelectedIndex + 1) * 3600;
             bw.Write(time);
 
             bw.Close();
