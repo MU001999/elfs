@@ -27,13 +27,16 @@ namespace easylockforstudy
     {
         private bool running = false;
         private BackgroundWorker BGWorker = new BackgroundWorker();
-        private const uint WM_SYSCOMMAND = 0x112;                   
-        private const int SC_MONITORPOWER = 0xF170;                  
+        private const uint WM_SYSCOMMAND = 0x0112;                   
+        private const uint SC_MONITORPOWER = 0xF170;                  
         private const int MonitorPowerOff = 2;
+        private const int MOUSEEVENTF_MOVE = 0x0001;
         private static readonly IntPtr HWND_BROADCAST = new IntPtr(0xffff);
 
         [DllImport("user32.dll")]
-        private static extern IntPtr SendMessage(IntPtr hWnd, uint Msg, int wParam, int lParam);
+        private static extern int SendMessage(IntPtr hWnd, uint Msg, uint wParam, int lParam);
+        [DllImport("user32.dll")]
+        private static extern void mouse_event(Int32 dwFlags, Int32 dx, Int32 dy, Int32 dwData, UIntPtr dwExtraInfo);
 
         public MainWindow()
         {
@@ -56,12 +59,10 @@ namespace easylockforstudy
         private void LOCK(object sender, DoWorkEventArgs e)
         {
             long target = (long)e.Argument;
-            running = true;
             while (GetTimeStampNow() < target)
             {
                 SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, MonitorPowerOff);
             }
-            running = false;
             File.Delete(@".\\time.dat");
         }
 
@@ -87,9 +88,9 @@ namespace easylockforstudy
 
                 if (GetTimeStampNow() < target)
                 {
-                    MaxScreen();
+                    Work();
                     BGWorker.DoWork += LOCK;
-                    BGWorker.RunWorkerCompleted += Restore;
+                    BGWorker.RunWorkerCompleted += Rest;
                     BGWorker.RunWorkerAsync(target);
                 }
                 return;
@@ -97,14 +98,20 @@ namespace easylockforstudy
             else return;
         }
 
-        private void Restore(object sender, RunWorkerCompletedEventArgs e)
+        private void Rest(object sender, RunWorkerCompletedEventArgs e)
         {
+            FakeButton.IsEnabled = !FakeButton.IsEnabled;
+            running = false;
             this.WindowStyle = System.Windows.WindowStyle.SingleBorderWindow;
             this.WindowState = System.Windows.WindowState.Normal;
+
+            mouse_event(MOUSEEVENTF_MOVE, 0, 1, 0, UIntPtr.Zero);
         }
 
-        private void MaxScreen()
+        private void Work()
         {
+            FakeButton.IsEnabled = !FakeButton.IsEnabled;
+            running = true;
             this.Topmost = true;
             this.WindowStyle = System.Windows.WindowStyle.None;
             this.WindowState = System.Windows.WindowState.Maximized;
@@ -118,7 +125,7 @@ namespace easylockforstudy
             FileStream fs = new FileStream(fileName, FileMode.Create);
             BinaryWriter bw = new BinaryWriter(fs);
 
-            long time = GetTimeStampNow() + (timeChoose.SelectedIndex + 1) * 3600;
+            long time = GetTimeStampNow() + (timeChoose.SelectedIndex + 1) * 3;
             bw.Write(time);
 
             bw.Close();
