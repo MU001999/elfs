@@ -5,8 +5,24 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:easylockforstudy"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Easy Lock For Study" Height="360" Width="640" ResizeMode="NoResize">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="选择你打算锁屏的时间，点击关闭显示器，即可开始学习" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <ComboBox Name="timeChoose" Grid.Row="1" Height="22" Width="60" SelectedIndex="0">
+            <ComboBoxItem Content="1小时"/>
+            <ComboBoxItem Content="2小时"/>
+            <ComboBoxItem Content="3小时"/>
+            <ComboBoxItem Content="4小时"/>
+            <ComboBoxItem Content="5小时"/>
+            <ComboBoxItem Content="6小时"/>
+            <ComboBoxItem Content="7小时"/>
+            <ComboBoxItem Content="8小时"/>
+        </ComboBox>
+        <Button Grid.Row="2" Content="关闭显示器" Height="40" Width="160" FontSize="25" Click="Button_Click"/>
     </Grid>
 </Window>
