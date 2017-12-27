@@ -26,6 +26,7 @@ namespace easylockforstudy
     public partial class MainWindow : Window
     {
         private bool running = false;
+        private string fileName = System.IO.Path.GetTempPath() + "time.dat";
         private BackgroundWorker BGWorker = new BackgroundWorker();
         private const uint WM_SYSCOMMAND = 0x0112;                   
         private const uint SC_MONITORPOWER = 0xF170;                  
@@ -41,6 +42,7 @@ namespace easylockforstudy
         public MainWindow()
         {
             InitializeComponent();
+            ReadTime();
             string exePath = System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName;
             RegistryKey run = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
             if (run == null)
@@ -48,7 +50,6 @@ namespace easylockforstudy
                 run = Registry.CurrentUser.CreateSubKey(@"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run");
             }
             run.SetValue("EasyLock", exePath);
-            ReadTime();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -63,7 +64,6 @@ namespace easylockforstudy
             {
                 SendMessage(HWND_BROADCAST, WM_SYSCOMMAND, SC_MONITORPOWER, MonitorPowerOff);
             }
-            File.Delete(@".\\time.dat");
         }
 
         private long GetTimeStampNow()
@@ -75,7 +75,6 @@ namespace easylockforstudy
 
         private void ReadTime()
         {
-            string fileName = @".\\time.dat";
             if (File.Exists(fileName))
             {
                 FileStream fs = new FileStream(fileName, FileMode.Open);
@@ -83,8 +82,8 @@ namespace easylockforstudy
 
                 long target = br.ReadInt64();
 
-                fs.Close();
                 br.Close();
+                fs.Close();
 
                 if (GetTimeStampNow() < target)
                 {
@@ -119,7 +118,6 @@ namespace easylockforstudy
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            string fileName = @".\\time.dat";
             if (File.Exists(fileName)) File.Delete(fileName);
 
             FileStream fs = new FileStream(fileName, FileMode.Create);
